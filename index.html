@@ -1,0 +1,253 @@
+<!DOCTYPE html><html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Турнірна Таблиця Електриків</title>
+  <style>
+    :root {
+      --green-main: #009E4F;
+      --green-dark: #007C3E;
+      --green-light: #E6F4EC;
+      --text-color: #1a1a1a;
+      --gold: #FFD700;
+      --silver: #C0C0C0;
+      --bronze: #CD7F32;
+    }body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: var(--green-light);
+  color: var(--text-color);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+}
+
+header {
+  background-color: var(--green-main);
+  width: 100%;
+  padding: 20px 0;
+  text-align: center;
+  color: white;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+.logo-container {
+  position: absolute;
+  top: 10px;
+  left: 20px;
+}
+
+.logo-container img {
+  height: 60px;
+}
+
+h1 {
+  margin: 0;
+  font-size: 2rem;
+}
+
+table {
+  margin-top: 30px;
+  width: 90%;
+  max-width: 1000px;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+th, td {
+  padding: 14px;
+  text-align: center;
+}
+
+th {
+  background-color: var(--green-dark);
+  color: white;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+}
+
+tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+tr.updated {
+  background-color: #ccf5da !important;
+}
+
+tbody tr {
+  transition: transform 0.5s ease;
+  position: relative;
+}
+
+tr.gold {
+  background-color: var(--gold) !important;
+}
+
+tr.silver {
+  background-color: var(--silver) !important;
+}
+
+tr.bronze {
+  background-color: var(--bronze) !important;
+}
+
+.controls {
+  margin-top: 20px;
+  display: flex;
+  gap: 15px;
+}
+
+button {
+  background-color: var(--green-main);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  font-size: 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: var(--green-dark);
+}
+
+@media (max-width: 600px) {
+  table, th, td {
+    font-size: 0.85rem;
+  }
+
+  .logo-container img {
+    height: 30px;
+  }
+}
+
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo-container">
+      <img src="https://workspace.digital/wp-content/uploads/2017/01/schneider-logo-white-400.png" alt="Schneider Electric Logo">
+    </div>
+    <h1>Турнірна Таблиця Електриків</h1>
+  </header>  <div class="controls">
+    <button onclick="loadData()">🔄 Оновити дані</button>
+    <button onclick="exportTableToExcel()">⬇️ Експорт в Excel</button>
+  </div>  <table id="leaderboard">
+    <thead>
+      <tr>
+        <th>Місце</th>
+        <th>Команда</th>
+        <th>Завдання 1</th>
+        <th>Завдання 2</th>
+        <th>Завдання 3</th>
+        <th>Завдання 4</th>
+        <th>Загальні бали</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td colspan="7">Завантаження...</td></tr>
+    </tbody>
+  </table>  <script>
+    const sheetId = "10UH1iymC0dHJiILR5fqB6CTKVMfwew-XlYrHZMfxFV4";
+    const sheetName = "Sheet1";
+    const url = `https://opensheet.elk.sh/${sheetId}/${sheetName}`;
+
+    function getRowKey(row) {
+      return row["Команда"];
+    }
+
+    function capturePositions() {
+      const rows = document.querySelectorAll("#leaderboard tbody tr");
+      const map = new Map();
+      rows.forEach(row => {
+        const key = row.dataset.key;
+        map.set(key, row.getBoundingClientRect().top);
+      });
+      return map;
+    }
+
+    function animateChanges(beforePositions) {
+      const rows = document.querySelectorAll("#leaderboard tbody tr");
+      rows.forEach(row => {
+        const key = row.dataset.key;
+        const oldTop = beforePositions.get(key);
+        const newTop = row.getBoundingClientRect().top;
+        const deltaY = oldTop - newTop;
+
+        if (deltaY !== 0) {
+          row.style.transform = `translateY(${deltaY}px)`;
+          requestAnimationFrame(() => {
+            row.style.transition = "transform 0.5s ease";
+            row.style.transform = "translateY(0)";
+          });
+        }
+      });
+    }
+function loadData() {
+      fetch(url)
+        .then(res => res.json())
+        .then(data => {
+          const tbody = document.querySelector("#leaderboard tbody");
+          const positionsBefore = capturePositions();
+          tbody.innerHTML = "";
+
+          data.sort((a, b) => parseInt(b["Загальні бали"]) - parseInt(a["Загальні бали"]));
+
+          data.forEach((row, index) => {
+            const tr = document.createElement("tr");
+            tr.dataset.key = getRowKey(row);
+
+            if (index === 0) {
+              tr.classList.add("gold");
+            } else if (index === 1) {
+              tr.classList.add("silver");
+            } else if (index === 2) {
+              tr.classList.add("bronze");
+            }
+
+            const medal = index === 0 ? "🥇" : index === 1 ? "🥈" : index === 2 ? "🥉" : index + 1;
+
+            tr.innerHTML = `
+              <td>${medal}</td>
+              <td>${row["Команда"]}</td>
+              <td>${row["Завдання 1"]}</td>
+              <td>${row["Завдання 2"]}</td>
+              <td>${row["Завдання 3"]}</td>
+              <td>${row["Завдання 4"]}</td>
+              <td>${row["Загальні бали"]}</td>`
+            ;
+            tbody.appendChild(tr);
+          });
+
+          animateChanges(positionsBefore);
+        })
+        .catch(error => {
+          console.error("Помилка завантаження даних:", error);
+          const tbody = document.querySelector("#leaderboard tbody");
+          tbody.innerHTML = "<tr><td colspan='7'>Помилка завантаження даних</td></tr>";
+        });
+    }
+
+    function exportTableToExcel() {
+      const table = document.getElementById("leaderboard");
+      const html = table.outerHTML.replace(/ /g, '%20');
+      const url = 'data:application/vnd.ms-excel,' + html;
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'turnirna-tablytsia.xls';
+      link.click();
+    }
+
+    window.onload = () => {
+      loadData();
+      setInterval(loadData, 10000); // автооновлення кожні 10 сек
+    };
+  </script></body>
+</html>
