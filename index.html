@@ -148,7 +148,7 @@ button:hover {
         <th>Завдання 2</th>
         <th>Завдання 3</th>
         <th>Завдання 4</th>
-        <th>Загальні бали</th>
+        <th>Загальний бал</th>
       </tr>
     </thead>
     <tbody>
@@ -198,7 +198,7 @@ function loadData() {
           const positionsBefore = capturePositions();
           tbody.innerHTML = "";
 
-          data.sort((a, b) => parseInt(b["Загальні бали"]) - parseInt(a["Загальні бали"]));
+          data.sort((a, b) => parseInt(b["Загальний бал"]) - parseInt(a["Загальний бал"]));
 
           data.forEach((row, index) => {
             const tr = document.createElement("tr");
@@ -221,7 +221,7 @@ function loadData() {
               <td>${row["Завдання 2"]}</td>
               <td>${row["Завдання 3"]}</td>
               <td>${row["Завдання 4"]}</td>
-              <td>${row["Загальні бали"]}</td>`
+              <td>${row["Загальний бал"]}</td>`
             ;
             tbody.appendChild(tr);
           });
@@ -251,3 +251,4 @@ function loadData() {
     };
   </script></body>
 </html>
+
