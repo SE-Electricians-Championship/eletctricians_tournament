@@ -1,18 +1,21 @@
-<!DOCTYPE html><html lang="uk">
+<!DOCTYPE html>
+<html lang="uk">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Чемпіонат України серед Електриків</title>
-  <style>
-    :root {
-      --green-main: #009E4F;
-      --green-dark: #007C3E;
-      --green-light: #E6F4EC;
-      --text-color: #1a1a1a;
-      --gold: #FFD700;
-      --silver: #C0C0C0;
-      --bronze: #CD7F32;
-    }body {
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Чемпіонат України серед Електриків</title>
+<style>
+:root {
+  --green-main: #009E4F;
+  --green-dark: #007C3E;
+  --green-light: #E6F4EC;
+  --text-color: #1a1a1a;
+  --gold: #FFD700;
+  --silver: #C0C0C0;
+  --bronze: #CD7F32;
+}
+
+body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   margin: 0;
   padding: 0;
@@ -30,7 +33,7 @@ header {
   padding: 20px 0;
   text-align: center;
   color: white;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
   position: relative;
 }
 
@@ -47,6 +50,15 @@ header {
 h1 {
   margin: 0;
   font-size: 2rem;
+  padding: 0 80px;
+}
+
+.sub-title {
+  display: block; /* завжди новий рядок */
+  font-size: 2rem;
+  font-weight: bold;
+  margin-top: 4px;
+  color: #FFD700; /* можна змінити колір */
 }
 
 table {
@@ -57,7 +69,8 @@ table {
   background: white;
   border-radius: 10px;
   overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  transition: all 0.5s ease;
 }
 
 th, td {
@@ -72,35 +85,30 @@ th {
   font-size: 0.85rem;
 }
 
-tr:nth-child(even) {
-  background-color: #f9f9f9;
+tr:nth-child(even) { background-color: #f9f9f9; }
+tr.updated { background-color: #ccf5da !important; }
+
+tbody tr { transition: transform 0.5s ease; position: relative; }
+
+tr.medal {
+  opacity: 0;
+  transition: background-color 1s ease, opacity 1s ease;
 }
 
-tr.updated {
-  background-color: #ccf5da !important;
+tr.medal.show {
+  opacity: 1;
 }
 
-tbody tr {
-  transition: transform 0.5s ease;
-  position: relative;
-}
-
-tr.gold {
-  background-color: var(--gold) !important;
-}
-
-tr.silver {
-  background-color: var(--silver) !important;
-}
-
-tr.bronze {
-  background-color: var(--bronze) !important;
-}
+tr.gold { background-color: var(--gold) !important; }
+tr.silver { background-color: var(--silver) !important; }
+tr.bronze { background-color: var(--bronze) !important; }
 
 .controls {
   margin-top: 20px;
   display: flex;
   gap: 15px;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 button {
@@ -114,141 +122,188 @@ button {
   transition: background-color 0.3s ease;
 }
 
-button:hover {
-  background-color: var(--green-dark);
+button:hover { background-color: var(--green-dark); }
+
+.checkbox-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1rem;
+  margin-top: 10px;
+}
+
+/* Адаптивність */
+@media (max-width: 900px) {
+  h1 { font-size: 1.6rem; padding: 0 60px; }
+  .sub-title { font-size: 1.3rem; }
+  th, td { padding: 10px; }
 }
 
 @media (max-width: 600px) {
-  table, th, td {
-    font-size: 0.85rem;
+  h1 {
+    font-size: 1.3rem;
+    padding: 0 40px;
+    margin-top: 50px; /* щоб лого не насувалося */
   }
 
-  .logo-container img {
-    height: 30px;
+  .sub-title { font-size: 1.3rem; }
+
+  .logo-container img { height: 40px; }
+
+  th, td { padding: 6px; font-size: 0.75rem; }
+
+  table {
+    width: 100%;
+    margin-top: 20px;
+    font-size: 0.75rem;
+    display: block;
+    overflow-x: auto;
   }
+
+  .controls { flex-direction: column; gap: 10px; }
+
+  button { padding: 10px 16px; font-size: 0.9rem; }
 }
-
-  </style>
+</style>
 </head>
 <body>
-  <header>
-    <div class="logo-container">
-      <img src="https://workspace.digital/wp-content/uploads/2017/01/schneider-logo-white-400.png" alt="Schneider Electric Logo">
-    </div>
-    <h1>Чемпіонат України серед Електриків</h1>
-  </header>  <div class="controls">
-    <button onclick="loadData()">🔄 Оновити дані</button>
-    <button onclick="exportTableToExcel()">⬇️ Експорт в Excel</button>
-  </div>  <table id="leaderboard">
-    <thead>
-      <tr>
-        <th>Місце</th>
-        <th>Команда</th>
-        <th>Завдання 1</th>
-        <th>Завдання 2</th>
-        <th>Завдання 3</th>
-        <th>Завдання 4</th>
-        <th>Загальний бал</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr><td colspan="7">Завантаження...</td></tr>
-    </tbody>
-  </table>  <script>
-    const sheetId = "10UH1iymC0dHJiILR5fqB6CTKVMfwew-XlYrHZMfxFV4";
-    const sheetName = "Sheet1";
-    const url = `https://opensheet.elk.sh/${sheetId}/${sheetName}`;
+<header>
+  <div class="logo-container">
+    <img src="https://workspace.digital/wp-content/uploads/2017/01/schneider-logo-white-400.png" alt="Schneider Electric Logo">
+  </div>
+  <h1>
+    Чемпіонат України серед Електриків
+    <span class="sub-title">Schneider Electric Cup</span>
+  </h1>
+</header>
 
-    function getRowKey(row) {
-      return row["Команда"];
-    }
+<table id="leaderboard">
+  <thead>
+    <tr>
+      <th>Місце</th>
+      <th>Команда</th>
+      <th>Завдання 1</th>
+      <th>Завдання 2</th>
+      <th>Завдання 3</th>
+      <th>Завдання 4</th>
+      <th>Загальний бал</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td colspan="7">Завантаження...</td></tr>
+  </tbody>
+</table>
 
-    function capturePositions() {
-      const rows = document.querySelectorAll("#leaderboard tbody tr");
-      const map = new Map();
-      rows.forEach(row => {
-        const key = row.dataset.key;
-        map.set(key, row.getBoundingClientRect().top);
+<div class="controls">
+  <button onclick="loadData()">🔄 Оновити дані</button>
+  <button onclick="exportTableToExcel()">⬇️ Експорт в Excel</button>
+  <label class="checkbox-container">
+    <input type="checkbox" id="showMedals"> Результати
+  </label>
+</div>
+
+<script>
+const sheetId = "10UH1iymC0dHJiILR5fqB6CTKVMfwew-XlYrHZMfxFV4";
+const sheetName = "Sheet1";
+const url = `https://opensheet.elk.sh/${sheetId}/${sheetName}`;
+
+let showMedals = false;
+
+const checkbox = document.getElementById('showMedals');
+checkbox.addEventListener('change', (e) => {
+  showMedals = e.target.checked;
+  loadData();
+});
+
+function getRowKey(row) { return row["Команда"]; }
+
+function capturePositions() {
+  const rows = document.querySelectorAll("#leaderboard tbody tr");
+  const map = new Map();
+  rows.forEach(row => {
+    const key = row.dataset.key;
+    map.set(key, row.getBoundingClientRect().top);
+  });
+  return map;
+}
+
+function animateChanges(beforePositions) {
+  const rows = document.querySelectorAll("#leaderboard tbody tr");
+  rows.forEach(row => {
+    const key = row.dataset.key;
+    const oldTop = beforePositions.get(key);
+    const newTop = row.getBoundingClientRect().top;
+    const deltaY = oldTop - newTop;
+
+    if (deltaY !== 0) {
+      row.style.transform = `translateY(${deltaY}px)`;
+      requestAnimationFrame(() => {
+        row.style.transition = "transform 0.5s ease";
+        row.style.transform = "translateY(0)";
       });
-      return map;
     }
+  });
+}
 
-    function animateChanges(beforePositions) {
-      const rows = document.querySelectorAll("#leaderboard tbody tr");
-      rows.forEach(row => {
-        const key = row.dataset.key;
-        const oldTop = beforePositions.get(key);
-        const newTop = row.getBoundingClientRect().top;
-        const deltaY = oldTop - newTop;
-
-        if (deltaY !== 0) {
-          row.style.transform = `translateY(${deltaY}px)`;
-          requestAnimationFrame(() => {
-            row.style.transition = "transform 0.5s ease";
-            row.style.transform = "translateY(0)";
-          });
-        }
-      });
-    }
 function loadData() {
-      fetch(url)
-        .then(res => res.json())
-        .then(data => {
-          const tbody = document.querySelector("#leaderboard tbody");
-          const positionsBefore = capturePositions();
-          tbody.innerHTML = "";
+  fetch(url)
+    .then(res => res.json())
+    .then(data => {
+      const tbody = document.querySelector("#leaderboard tbody");
+      const positionsBefore = capturePositions();
+      tbody.innerHTML = "";
 
-          data.sort((a, b) => parseInt(b["Загальний бал"]) - parseInt(a["Загальний бал"]));
+      data.sort((a, b) => parseInt(b["Загальний бал"]) - parseInt(a["Загальний бал"]));
 
-          data.forEach((row, index) => {
-            const tr = document.createElement("tr");
-            tr.dataset.key = getRowKey(row);
+      data.forEach((row,index)=>{
+        const tr = document.createElement("tr");
+        tr.dataset.key = getRowKey(row);
 
-            if (index === 0) {
-              tr.classList.add("gold");
-            } else if (index === 1) {
-              tr.classList.add("silver");
-            } else if (index === 2) {
-              tr.classList.add("bronze");
-            }
+        let medal = index + 1;
+        tr.classList.remove("gold","silver","bronze","medal","show");
 
-            const medal = index === 0 ? "🥇" : index === 1 ? "🥈" : index === 2 ? "🥉" : index + 1;
+        if(showMedals && index<3){
+          tr.classList.add("medal");
+          if(index===0) tr.classList.add("gold","show");
+          else if(index===1) tr.classList.add("silver","show");
+          else if(index===2) tr.classList.add("bronze","show");
 
-            tr.innerHTML = `
-              <td>${medal}</td>
-              <td>${row["Команда"]}</td>
-              <td>${row["Завдання 1"]}</td>
-              <td>${row["Завдання 2"]}</td>
-              <td>${row["Завдання 3"]}</td>
-              <td>${row["Завдання 4"]}</td>
-              <td>${row["Загальний бал"]}</td>`
-            ;
-            tbody.appendChild(tr);
-          });
+          medal = index===0?"🥇":index===1?"🥈":index===2?"🥉":medal;
+        }
 
-          animateChanges(positionsBefore);
-        })
-        .catch(error => {
-          console.error("Помилка завантаження даних:", error);
-          const tbody = document.querySelector("#leaderboard tbody");
-          tbody.innerHTML = "<tr><td colspan='7'>Помилка завантаження даних</td></tr>";
-        });
-    }
+        tr.innerHTML = `<td>${medal}</td>
+          <td>${row["Команда"]}</td>
+          <td>${row["Завдання 1"]}</td>
+          <td>${row["Завдання 2"]}</td>
+          <td>${row["Завдання 3"]}</td>
+          <td>${row["Завдання 4"]}</td>
+          <td>${row["Загальний бал"]}</td>`;
+        tbody.appendChild(tr);
+      });
 
-    function exportTableToExcel() {
-      const table = document.getElementById("leaderboard");
-      const html = table.outerHTML.replace(/ /g, '%20');
-      const url = 'data:application/vnd.ms-excel,' + html;
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = 'turnirna-tablytsia.xls';
-      link.click();
-    }
+      animateChanges(positionsBefore);
+    })
+    .catch(error => {
+      console.error("Помилка завантаження даних:", error);
+      const tbody = document.querySelector("#leaderboard tbody");
+      tbody.innerHTML = "<tr><td colspan='7'>Помилка завантаження даних</td></tr>";
+    });
+}
 
-    window.onload = () => {
-      loadData();
-      setInterval(loadData, 10000); // автооновлення кожні 10 сек
-    };
-  </script></body>
+function exportTableToExcel() {
+  const table = document.getElementById("leaderboard");
+  const html = table.outerHTML.replace(/ /g, '%20');
+  const url = 'data:application/vnd.ms-excel,' + html;
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = 'turnirna-tablytsia.xls';
+  link.click();
+}
+
+window.onload = ()=>{
+  loadData();
+  setInterval(loadData,10000);
+};
+</script>
+</body>
 </html>
-
