@@ -188,12 +188,12 @@ button:hover { background-color: var(--green-dark); }
       <th>Завдання 1</th>
       <th>Завдання 2</th>
       <th>Завдання 3</th>
-      <th>Завдання 4</th>
+     <!-- <th>Завдання 4</th> -->
       <th>Загальний бал</th>
     </tr>
   </thead>
   <tbody>
-    <tr><td colspan="7">Завантаження...</td></tr>
+    <tr><td colspan="6">Завантаження...</td></tr>
   </tbody>
 </table>
 
@@ -279,7 +279,7 @@ function loadData() {
           <td>${row["Завдання 1"]}</td>
           <td>${row["Завдання 2"]}</td>
           <td>${row["Завдання 3"]}</td>
-          <td>${row["Завдання 4"]}</td>
+          <!-- <td>${row["Завдання 4"]}</td> -->
           <td>${row["Загальний бал"]}</td>`;
         tbody.appendChild(tr);
       });
@@ -289,7 +289,7 @@ function loadData() {
     .catch(error => {
       console.error("Помилка завантаження даних:", error);
       const tbody = document.querySelector("#leaderboard tbody");
-      tbody.innerHTML = "<tr><td colspan='7'>Помилка завантаження даних</td></tr>";
+      tbody.innerHTML = "<tr><td colspan='6'>Помилка завантаження даних</td></tr>";
     });
 }
 
@@ -310,4 +310,5 @@ window.onload = ()=>{
 </script>
 </body>
 </html>
+
 
